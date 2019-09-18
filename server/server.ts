@@ -1,10 +1,18 @@
 import * as express from 'express';
+import * as mongoose from 'mongoose';
 import { Router } from '../routes/model.routes';
 import { enviroment } from '../env/enviroment';
 
 export class Server {
 
     private app: express.Application = express();
+
+    private initializeDB(): Promise<typeof mongoose> {
+        return mongoose.connect(enviroment.db.cloud, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+    }
 
     private initRoutes(routes: Router[]): Promise<any> {
         return new Promise((resolve, reject) => {
@@ -28,7 +36,9 @@ export class Server {
     }
 
     bootstrap(routes: Router[] = []): Promise<any> {
-        return this.initRoutes(routes);
+        return this.initializeDB().then(
+            () => this.initRoutes(routes).then(() => this)
+        )
     }
 
 }

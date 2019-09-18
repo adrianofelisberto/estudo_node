@@ -6,5 +6,8 @@ config();
 export const enviroment = {
     server: {
         port: process.env.PORT_SERVER || 3000
+    },
+    db: {
+        cloud: process.env.MONGO_CLOUD || ""
     }
 }
